@@ -11,8 +11,8 @@ while True:
     print("-" * width)
     username = input("USERNAME: ")
     if not username:
-        break
-    url = f'https://api.mojang.com/users/profiles/minecraft/{username}?'
+        break # Exit when no username given
+    url = f'https://api.mojang.com/users/profiles/minecraft/{username}'
     try:
         response = requests.get(url)
         uuid = response.json()['id']
@@ -20,12 +20,14 @@ while True:
         print("Mojang API call failed. Check username spelling.")
         continue
     uuid = response.json()['id']
-
-    #print(uuid) #7125ba8b1c864508b92bb5c042ccfe2b
     url = f'https://api.hypixel.net/player?key={api}&uuid={uuid}'
     response = requests.get(url)
-    json = response.json()
 
+    if response.status_code == 403:
+        print("403 Forbidden Error. Your API key is probably invalid.")
+        break
+
+    json = response.json()
     if 'SuperSmash' not in json['player']['stats'].keys():
         print("No smash data for " + username)
         continue
@@ -36,7 +38,7 @@ while True:
         continue
     class_names = smash_json['class_stats'].keys()
 
-    print("OVERALL LEVEL: " + str(smash_json['smashLevel']) + "\n")
+    print("OVERALL LEVEL: " + colored(smash_json['smashLevel'], attrs=['bold']) + "\n")
     prestiged_classes = set()
     print("PRESTIGES:")
     for name in class_names:

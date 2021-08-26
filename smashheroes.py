@@ -33,6 +33,10 @@ while True:
         continue
     smash_json = json['player']['stats']['SuperSmash']
 
+    if 'smashLevel' not in smash_json:
+        print("Smash level 0. No stats available.")
+        break
+
     if 'class_stats' not in smash_json:
         print("No class stats for " + username + " (never played before)")
         continue

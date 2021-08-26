@@ -9,7 +9,7 @@
   * Type /api when on mc.hypixel.net, then paste your key in key.txt
 * Python
   * Install Python 3
-  * Install dependencies (execute `pip install termcolor` and `pip install requests`)
+  * Install dependencies (execute `pip install -r requirements.txt`)
 
 # How to use:
 

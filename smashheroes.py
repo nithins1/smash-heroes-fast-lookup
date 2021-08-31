@@ -13,12 +13,17 @@ while True:
     if not username:
         break # Exit when no username given
     url = f'https://api.mojang.com/users/profiles/minecraft/{username}'
-    try:
-        response = requests.get(url)
-        uuid = response.json()['id']
-    except:
-        print("Mojang API call failed. Check username spelling.")
+    response = requests.get(url)
+    if response.status_code == 204:
+        print("Mojang API call returned no content. Check username spelling.")
         continue
+    elif response.status_code >= 500:
+        print("Mojang API call resulted in server error.")
+        break
+    elif response.status_code != 200:
+        print("Mojang API resulted in unknown error.")
+        break
+
     uuid = response.json()['id']
     url = f'https://api.hypixel.net/player?key={api}&uuid={uuid}'
     response = requests.get(url)
@@ -26,9 +31,18 @@ while True:
     if response.status_code == 403:
         print("403 Forbidden Error. Your API key is probably invalid.")
         break
+    elif response.status_code >= 500:
+        print("Hypixel API call resulted in server error.")
+        break
 
     json = response.json()
-    if 'SuperSmash' not in json['player']['stats'].keys():
+    if json['player'] is None:
+        print(username + " has never connected to Hypixel")
+        continue
+    elif 'stats' not in json['player'].keys():
+        print("No Hypixel stats for " + username)
+        continue
+    elif 'SuperSmash' not in json['player']['stats'].keys():
         print("No smash data for " + username)
         continue
     smash_json = json['player']['stats']['SuperSmash']

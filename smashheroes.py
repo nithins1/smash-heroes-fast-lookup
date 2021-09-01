@@ -13,7 +13,12 @@ while True:
     if not username:
         break # Exit when no username given
     url = f'https://api.mojang.com/users/profiles/minecraft/{username}'
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except:
+        print("Unable to connect to Mojang API. Your internet is probably down.")
+        break
+
     if response.status_code == 204:
         print("Mojang API call returned no content. Check username spelling.")
         continue

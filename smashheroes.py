@@ -9,7 +9,7 @@ api = f.read().rstrip()
 if not api:
     api = input(colored("You need an API key to access the Hypixel API.\n"
                         "Connect to mc.hypixel.net, type /api, and copy the key.\n"
-                        "Then paste it into key.txt or enter it here: ", "blue"))
+                        "Then paste it here: ", "blue"))
     f.write(api)
     f.close()
 

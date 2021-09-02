@@ -4,8 +4,14 @@ import os
 
 width, height = os.get_terminal_size()
 
-f = open('key.txt','r')
+f = open('key.txt', 'r+')
 api = f.read().rstrip()
+if not api:
+    api = input(colored("You need an API key to access the Hypixel API.\n"
+                        "Connect to mc.hypixel.net, type /api, and copy the key.\n"
+                        "Then paste it into key.txt or enter it here: ", "blue"))
+    f.write(api)
+    f.close()
 
 while True:
     print("-" * width)
@@ -26,7 +32,7 @@ while True:
         print("Mojang API call resulted in server error.")
         break
     elif response.status_code != 200:
-        print("Mojang API resulted in unknown error.")
+        print("Mojang API call resulted in unknown error.")
         break
 
     uuid = response.json()['id']
@@ -34,7 +40,7 @@ while True:
     response = requests.get(url)
 
     if response.status_code == 403:
-        print("403 Forbidden Error. Your API key is probably invalid.")
+        print("Hypixel API call resulted in 403 Forbidden Error. Your API key is probably invalid.")
         break
     elif response.status_code >= 500:
         print("Hypixel API call resulted in server error.")

@@ -1,6 +1,11 @@
 import requests
 from termcolor import colored
 import os
+import argparse
+
+parser = argparse.ArgumentParser(description="Print Smash Heroes stats for any player.")
+parser.add_argument("-c", "--compact", action="store_true", help="only print overall level and prestige count")
+args = parser.parse_args()
 
 width, height = os.get_terminal_size()
 
@@ -68,19 +73,27 @@ while True:
     class_names = smash_json['class_stats'].keys()
 
     print("OVERALL LEVEL: " + colored(smash_json['smashLevel'], attrs=['bold']) + "\n")
-    prestiged_classes = set()
-    print("PRESTIGES:")
-    for name in class_names:
-        if "pg_" + name in smash_json.keys():
-            print(name + ": " + str(smash_json["pg_" + name]))
-            prestiged_classes.add(name)
-    print("\nLEVELS:")
-    for name in class_names:
-        if "lastLevel_" + name in smash_json.keys():
-            msg = name + ": " + str(smash_json["lastLevel_" + name])
-            if name in prestiged_classes:
-                msg = colored(msg, "red")
-            print(msg)
+
+    if args.compact:
+        total_prestiges = 0
+        for name in class_names:
+            if "pg_" + name in smash_json.keys():
+                total_prestiges += smash_json["pg_" + name]
+        print("PRESTIGES: " + str(total_prestiges))
+    else:
+        prestiged_classes = set()
+        print("PRESTIGES:")
+        for name in class_names:
+            if "pg_" + name in smash_json.keys():
+                print(name + ": " + str(smash_json["pg_" + name]))
+                prestiged_classes.add(name)
+        print("\nLEVELS:")
+        for name in class_names:
+            if "lastLevel_" + name in smash_json.keys():
+                msg = name + ": " + str(smash_json["lastLevel_" + name])
+                if name in prestiged_classes:
+                    msg = colored(msg, "red")
+                print(msg)
 
 
 print("-" * width)

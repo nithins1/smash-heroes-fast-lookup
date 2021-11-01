@@ -7,14 +7,23 @@ parser = argparse.ArgumentParser(description="Print Smash Heroes stats for any p
 parser.add_argument("-c", "--compact", action="store_true", help="only print overall level and prestige count")
 args = parser.parse_args()
 
-width, height = os.get_terminal_size()
+width, height = 80, 24
+try:
+    width, height = os.get_terminal_size()
+except:
+    pass
 
-f = open('key.txt', 'r+')
+try:
+    f = open('key.txt', 'r+')
+except:
+    print("Could not open key.txt, check that the file exists in the current directory.")
+    exit(1)
+
 api = f.read().rstrip()
 if not api:
     api = input(colored("You need an API key to access the Hypixel API.\n"
                         "Connect to mc.hypixel.net, type /api, and copy the key.\n"
-                        "Then paste it here: ", "blue"))
+                        "Then paste it here: ", "magenta"))
     f.write(api)
     f.close()
 
